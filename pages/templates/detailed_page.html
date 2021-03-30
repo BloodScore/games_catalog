@@ -1,5 +1,124 @@
 {% extends 'index.html' %}
+{% load static %}
 
 {% block content %}
-    <h1>Detailed page</h1>
+    <div class="container-fluid vh-100">
+        <div class="row vh-100">
+            <div class="col-6" style="padding: 30px">
+                <div class="first-row">
+                    <span>PACMAN</span>
+                    <button><b>MUST</b></button>
+                </div>
+                <p style="font-size: 19px; margin-top: 3px"><b>arcade oldschool</b></p>
+                <p class="capt">Description</p>
+                <p style="font-weight: bold; color: gray">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                    incididunt ut labore et dolore magna aliqua. Posuere sollicitudin aliquam ultrices
+                    sagittis orci a scelerisque purus semper. Sit amet justo donec enim. Aliquam id diam
+                    maecenas ultricies mi eget mauris. Viverra nam libero justo laoreet sit amet. Dui nunc
+                    mattis enim ut tellus elementum sagittis. Mollis aliquam ut porttitor leo a diam sollicitudin
+                    tempor id. Porttitor rhoncus dolor purus non. Mauris commodo quis imperdiet massa
+                    tincidunt nunc pulvinar sapien et.
+                </p>
+                <p class="capt">Release Date</p>
+                <p style="font-weight: bold; color: gray">Nov 1992</p>
+                <p class="capt">Screenshots</p>
+
+                <div class="row" style="margin-left: 0px; margin-right: 0px">
+                    <div class="col">
+                        <img src="{% static 'images/screenshot.jpg' %}" width="100%" height="150px">
+                    </div>
+                    <div class="col">
+                        <img src="{% static 'images/screenshot.jpg' %}" width="100%" height="150px">
+                    </div>
+                    <div class="col">
+                        <img src="{% static 'images/screenshot.jpg' %}" width="100%" height="150px">
+                    </div>
+                </div>
+
+                <div class="row" style="margin-left: 0px; margin-right: 0px">
+                    <div class="col">
+                        <img src="{% static 'images/screenshot.jpg' %}" width="100%" height="150px">
+                    </div>
+                    <div class="col">
+                        <img src="{% static 'images/screenshot.jpg' %}" width="100%" height="150px">
+                    </div>
+                    <div class="col">
+                        <img src="{% static 'images/screenshot.jpg' %}" width="100%" height="150px">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col">
+                <p style="font-size: 23px; margin-top: 126.5px"><b>Ratings</b></p>
+                <div class="rating" style="background-color: rgb(104, 230, 85);">
+                    <span style="float: left">Users</span>
+                    <span style="float: right">7.6 (123 reviews)</span>
+                </div>
+                <div class="rating" style="background-color: orange;">
+                    <span style="float: left">Critics</span>
+                    <span style="float: right">6.0 (123 reviews)</span>
+                </div>
+                <p class="capt" style="margin-top: 30px">Genres</p>
+                <div class="genres">
+                    <span>Arcade</span>
+                    <span>Action</span>
+                </div>
+                <p class="capt" style="margin-top: 30px">Platforms</p>
+                <div class="genres">
+                    <span>PC</span>
+                    <span>PS4</span>
+                </div>
+            </div>
+
+            <div class="col">
+                <p class="capt" style="margin-top: 37px; margin-left: 15px;">#Pacman Tweets</p>
+                <div class="tweet">
+                    <span>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                        incididunt ut labore et dolore magna aliqua. Posuere sollicitudin aliquam ultrices
+                        sagittis orci a scelerisque purus semper.
+                    </span>
+                    <span style="display: inline-block; margin-top: 2px">15.03.2018 20:20</span>
+                    <span style="display: inline-block; float: right; margin-top: 2px">@tweet_author</span>
+                </div>
+                <div class="tweet">
+                    <span>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                        incididunt ut labore et dolore magna aliqua. Posuere sollicitudin aliquam ultrices
+                        sagittis orci a scelerisque purus semper.
+                    </span>
+                    <span style="display: inline-block; margin-top: 2px">15.03.2018 20:20</span>
+                    <span style="display: inline-block; float: right; margin-top: 2px">@tweet_author</span>
+                </div>
+                <div class="tweet">
+                    <span>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                        incididunt ut labore et dolore magna aliqua. Posuere sollicitudin aliquam ultrices
+                        sagittis orci a scelerisque purus semper.
+                    </span>
+                    <span style="display: inline-block; margin-top: 2px">15.03.2018 20:20</span>
+                    <span style="display: inline-block; float: right; margin-top: 2px">@tweet_author</span>
+                </div>
+                <div class="tweet">
+                    <span>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                        incididunt ut labore et dolore magna aliqua. Posuere sollicitudin aliquam ultrices
+                        sagittis orci a scelerisque purus semper.
+                    </span>
+                    <span style="display: inline-block; margin-top: 2px">15.03.2018 20:20</span>
+                    <span style="display: inline-block; float: right; margin-top: 2px">@tweet_author</span>
+                </div>
+                <div class="tweet">
+                    <span>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                        incididunt ut labore et dolore magna aliqua. Posuere sollicitudin aliquam ultrices
+                        sagittis orci a scelerisque purus semper.
+                    </span>
+                    <span style="display: inline-block; margin-top: 2px">15.03.2018 20:20</span>
+                    <span style="display: inline-block; float: right; margin-top: 2px">@tweet_author</span>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
