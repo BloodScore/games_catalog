@@ -167,3 +167,9 @@
     float: left;
     margin-left: 10px;
 }
+
+.first-half {
+    background-color: green;
+    margin: 30px;
+    height: 100%;
+}
