@@ -1,0 +1,8 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+.idea/
+db.sqlite3
+pages/__pycache__/
+pages/migrations/__pycache__/
+games_catalog/__pychahe__/
