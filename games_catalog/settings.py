@@ -127,7 +127,7 @@ STATICFILES_DIRS = [
 ]
 
 env = environ.Env()
-environ.Env.read_env()
+environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
 
 IGDB_CLIENT_ID = env('IGDB_CLIENT_ID')
 IGDB_ACCESS_TOKEN = env('IGDB_ACCESS_TOKEN')
