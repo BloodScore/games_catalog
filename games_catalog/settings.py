@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import environ
 import os
 from pathlib import Path
 
@@ -124,3 +125,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+
+env = environ.Env()
+environ.Env.read_env()
+
+IGDB_CLIENT_ID = env('IGDB_CLIENT_ID')
+IGDB_ACCESS_TOKEN = env('IGDB_ACCESS_TOKEN')
