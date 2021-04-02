@@ -5,24 +5,9 @@ from .integrations.igdb_api import IgdbAPI
 def index(request):
     api = IgdbAPI()
     games_list = api.get_games_test('fields name, cover.url, genres.name; limit 50;')
-    data = []
+    games_list = [game for game in games_list if game.get('cover')]
 
-    for game in games_list:
-        if 'cover' in game:
-            # url = game['cover']['url'].replace('t_thumb', 'cover_big')
-            genres = []
-            if 'genres' in game:
-                for i in game['genres']:
-                    genres.append(i['name'])
-            if len(genres) > 3:
-                genres = genres[:3]
-
-            data.append({'id': game['id'], 'name': game['name'],
-                         'cover': game['cover']['url'], 'genres': genres})
-        else:
-            data.append({'id': game['id'], 'name': game['name'], 'cover': 'https://via.placeholder.com/280'})
-
-    return render(request, 'index.html', context={'games': data})
+    return render(request, 'index.html', context={'games': games_list})
 
 
 def detailed_page(request, id):

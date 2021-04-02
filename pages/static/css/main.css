@@ -36,9 +36,14 @@ html, body {
     font-size: 25px;
     border: none;
     border-bottom: 2px solid black;
-    width: 90%;
+    width: 89.5%;
     text-align: center;
     outline: none;
+}
+
+.search-icon {
+    border: none;
+    background-color: white;
 }
 
 .cards {
@@ -49,25 +54,17 @@ html, body {
 }
 
 .game_card {
-    display: inline-block;
+    display: block;
+
     position: relative;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
     height: 280px;
     width: 280px;
     text-align: left;
-    margin-bottom: 68px;
-}
-
-.game_card:nth-child(3n+1) {
-    float: left;
-}
-
-.game_card:nth-child(3n+2) {
-    margin-left: 68.1585px;
-}
-.game_card:nth-child(3n+3) {
-    float: right;
+    margin-bottom: 50px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .game_card:hover {
@@ -140,36 +137,16 @@ html, body {
     transform: translateY(-7px);
 }
 
-.collapsible {
-    background-color: red;
-    color: white;
-    font-size: 20px;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    float: left;
-    margin-left: 10px;
-}
-
-.content {
-    padding: 0 18px;
-    display: none;
-    overflow: hidden;
-    background-color: red;
-    width: 25%;
-    margin-left: 0px;
-}
-
 .sidepanel {
     border-top: 2px solid black;
     height: 100%;
     width: 0;
     position: fixed;
-    z-index: 2;
+    z-index: 2000;
     top: 77px;
     left: 0;
     background-color: red;
+    opacity: 0.7;
     overflow-y: hidden;
     overflow-x: hidden;
     padding-top: 20px;
@@ -249,17 +226,6 @@ html, body {
     height: 180px;
     width: 180px;
     margin-bottom: 20px;
-}
-
-.screenshot:nth-child(3n+1) {
-    float: left;
-}
-
-.screenshot:nth-child(3n+2) {
-    margin-left: 39px;
-}
-.screenshot:nth-child(3n+3) {
-    float: right;
 }
 
 .screenshot img {

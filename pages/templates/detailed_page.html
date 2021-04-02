@@ -26,13 +26,16 @@
                 <p class="capt">Screenshots</p>
 
                 <div class="screenshots">
-                    {% for i in game.screenshots %}
-                        <div class="screenshot">
-                            <img src="{{ i.url }}">
-                        </div>
-                    {% endfor %}
+                    <div class="row">
+                        {% for i in game.screenshots %}
+                            <div class="col-md-6 col-lg-4 col-xxl-3">
+                                <div class="screenshot">
+                                    <img src="{{ i.url }}">
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
-
             </div>
 
             <div class="col">
