@@ -36,69 +36,22 @@
         </div>
 
         <div id="main">
-
-            <div class="raw">
-                <div class="game_card" style="float: left">
-                    <img src="{% static 'images/pacman.png' %}">
-                    <div class="caption">
-                        <h4><b>PACMAN</b></h4>
-                        <p>arcade oldschool</p>
-                        <button><b>Open</b></button>
-                        <button><b>MUST</b></button>
+            <div class="cards">
+                {% for i in games %}
+                    <div class="game_card">
+                        <img src="{{ i.cover }}">
+                        <div class="caption">
+                            <span>{{ i.name }}</span>
+                            {% for j in i.genres %}
+                                <p>{{ j }}</p>
+                            {% endfor %}
+                            <div class="buttons">
+                                <button><a href="{% url 'game_page' id=i.id %}" style="text-decoration: none; color: black"><b>Open</b></a></button>
+                                <button style="color: black"><b>MUST</b></button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-                <div class="game_card" style="margin: 0 auto">
-                    <img src="{% static 'images/pacman.png' %}">
-                    <div class="caption">
-                        <h4><b>PACMAN</b></h4>
-                        <p>arcade oldschool</p>
-                        <button><b>Open</b></button>
-                        <button><b>MUST</b></button>
-                    </div>
-                </div>
-
-                <div class="game_card" style="float: right">
-                    <img src="{% static 'images/pacman.png' %}">
-                    <div class="caption">
-                        <h4><b>PACMAN</b></h4>
-                        <p>arcade oldschool</p>
-                        <button><b>Open</b></button>
-                        <button><b>MUST</b></button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="raw">
-                <div class="game_card" style="float: left">
-                    <img src="{% static 'images/pacman.png' %}">
-                    <div class="caption">
-                        <h4><b>PACMAN</b></h4>
-                        <p>arcade oldschool</p>
-                        <button><b>Open</b></button>
-                        <button><b>MUST</b></button>
-                    </div>
-                </div>
-
-                <div class="game_card" style="margin: 0 auto">
-                    <img src="{% static 'images/pacman.png' %}">
-                    <div class="caption">
-                        <h4><b>PACMAN</b></h4>
-                        <p>arcade oldschool</p>
-                        <button><b>Open</b></button>
-                        <button><b>MUST</b></button>
-                    </div>
-                </div>
-
-                <div class="game_card" style="float: right">
-                    <img src="{% static 'images/pacman.png' %}">
-                    <div class="caption">
-                        <h4><b>PACMAN</b></h4>
-                        <p>arcade oldschool</p>
-                        <button><b>Open</b></button>
-                        <button><b>MUST</b></button>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
 
             <div class="navigation">
