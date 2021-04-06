@@ -69,17 +69,17 @@
 
         <div class="cards">
             <div class="row">
-                {% for i in games %}
+                {% for game in games %}
                     <div class="col-lg-4 col-xxl-3">
                         <div class="game_card">
-                            <img src="{{ i.cover.url }}" class="img-fluid">
+                            <img src="{{ game.cover.url }}" class="img-fluid">
                             <div class="caption">
-                                <span>{{ i.name }}</span>
-                                {% for j in i.genres %}
-                                    <p>{{ j.name }}</p>
+                                <span>{{ game.name }}</span>
+                                {% for genre in game.genres %}
+                                    <p>{{ genre.name }}</p>
                                 {% endfor %}
                                 <div class="buttons">
-                                    <button><a href="{% url 'game_page' id=i.id %}" style="text-decoration: none; color: black"><b>Open</b></a></button>
+                                    <button><a href="{% url 'game_page' id=game.id %}" style="text-decoration: none; color: black"><b>Open</b></a></button>
                                     <button style="color: black"><b>MUST</b></button>
                                 </div>
                             </div>
