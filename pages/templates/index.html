@@ -7,6 +7,8 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="{% static 'js/main.js' %}"></script>
 </head>
 <body>
         <header class="main_page_header">
@@ -16,9 +18,40 @@
         {% block content %}
         <div class="drop_and_search_container" id="search_container">
             <div id="mySidepanel" class="sidepanel">
-                <button class="closebtn" onclick="closeNav()">
-                    <img src="{% static 'images/triangle.png' %}" width="20px" height="20px">
-                </button>
+                <div class="first">
+                    <button class="closebtn" onclick="closeNav()">
+                        <img src="{% static 'images/triangle.png' %}" width="20px" height="20px">
+                    </button>
+                    <span>Filters</span>
+                </div>
+                <hr>
+                <div class="filters-area">
+                    <form action="{% url 'games_list_page' %}" method="get" class="filters-form">
+                        <label for="platforms">Platforms</label>
+                        <input list="platforms-list" placeholder="Start typing..." id="platforms" name="pl"
+                               class="selector" autocomplete="off" multiple="multiple">
+                        <datalist id="platforms-list">
+                            {% for platform in platforms %}
+                                <option>{{ platform.name }}</option>
+                            {% endfor %}
+                        </datalist>
+
+                        <label for="genres">Genres</label>
+                        <input list="genres-list" placeholder="Start typing..." id="genres" name="gn"
+                               class="selector" autocomplete="off"  multiple="multiple">
+                        <datalist id="genres-list">
+                            {% for genre in genres %}
+                                <option>{{ genre.name }}</option>
+                            {% endfor %}
+                        </datalist>
+
+                        <label for="rating">User rating</label>
+                        <input type="range" value="50" min="1" max="100" id="rating" name="ra"
+                               oninput="this.nextElementSibling.value = this.value" style="width: 85%">
+                        <output>50</output>
+                        <input type="submit" class="apply-filters" value="Apply">
+                    </form>
+                </div>
             </div>
 
             <button class="openbtn" id="open_btn" onclick="openNav()">
@@ -26,106 +59,60 @@
             </button>
 
 
-            <form id="search_form" autocomplete="off">
+            <form id="search_form" autocomplete="off" action="{% url 'games_list_page' %}" method="get">
                 <input type="search" id="query" name="q" placeholder="Search...">
-                <button type="submit" style="border: none; background-color: white;">
+                <button type="submit" class="search-icon">
                     <img src="{% static 'images/search.png' %}" width="30" height="30">
                 </button>
             </form>
         </div>
 
-        <div id="main">
-
-            <div class="raw">
-                <div class="game_card" style="float: left">
-                    <img src="{% static 'images/pacman.png' %}">
-                    <div class="caption">
-                        <h4><b>PACMAN</b></h4>
-                        <p>arcade oldschool</p>
-                        <button><b>Open</b></button>
-                        <button><b>MUST</b></button>
+        <div class="cards">
+            <div class="row">
+                {% for game in games %}
+                    <div class="col-lg-4 col-xxl-3">
+                        <div class="game_card">
+                            <img src="{{ game.cover.url }}" class="img-fluid">
+                            <div class="caption">
+                                <span>{{ game.name }}</span>
+                                {% for genre in game.genres %}
+                                    <p>{{ genre.name }}</p>
+                                {% endfor %}
+                                <div class="buttons">
+                                    <button><a href="{% url 'game_page' id=game.id %}" style="text-decoration: none; color: black"><b>Open</b></a></button>
+                                    <button style="color: black"><b>MUST</b></button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-                <div class="game_card" style="margin: 0 auto">
-                    <img src="{% static 'images/pacman.png' %}">
-                    <div class="caption">
-                        <h4><b>PACMAN</b></h4>
-                        <p>arcade oldschool</p>
-                        <button><b>Open</b></button>
-                        <button><b>MUST</b></button>
-                    </div>
-                </div>
-
-                <div class="game_card" style="float: right">
-                    <img src="{% static 'images/pacman.png' %}">
-                    <div class="caption">
-                        <h4><b>PACMAN</b></h4>
-                        <p>arcade oldschool</p>
-                        <button><b>Open</b></button>
-                        <button><b>MUST</b></button>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
+        </div>
 
-            <div class="raw">
-                <div class="game_card" style="float: left">
-                    <img src="{% static 'images/pacman.png' %}">
-                    <div class="caption">
-                        <h4><b>PACMAN</b></h4>
-                        <p>arcade oldschool</p>
-                        <button><b>Open</b></button>
-                        <button><b>MUST</b></button>
-                    </div>
-                </div>
-
-                <div class="game_card" style="margin: 0 auto">
-                    <img src="{% static 'images/pacman.png' %}">
-                    <div class="caption">
-                        <h4><b>PACMAN</b></h4>
-                        <p>arcade oldschool</p>
-                        <button><b>Open</b></button>
-                        <button><b>MUST</b></button>
-                    </div>
-                </div>
-
-                <div class="game_card" style="float: right">
-                    <img src="{% static 'images/pacman.png' %}">
-                    <div class="caption">
-                        <h4><b>PACMAN</b></h4>
-                        <p>arcade oldschool</p>
-                        <button><b>Open</b></button>
-                        <button><b>MUST</b></button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="navigation">
-                <button>1</button>
-                <button>2</button>
-                <button>3</button>
-            </div>
-
+        <div class="navigation">
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
         </div>
 
     {% endblock %}
 
+</body>
+
 <script>
-function openNav() {
-    document.getElementById("mySidepanel").style.width = "250px";
-    document.getElementById("open_btn").style.display = "none";
-    document.getElementById("main").style.marginLeft = "150px";
-    document.getElementById("search_container").style.marginLeft = "180px";
-
-}
-
-function closeNav() {
-    document.getElementById("mySidepanel").style.width = "0";
-    document.getElementById("open_btn").style.display = "block";
-    document.getElementById("main").style.marginLeft = "0";
-    document.getElementById("search_container").style.marginLeft = "0";
-}
+    $('.filters-form').on('submit',function(e){
+        e.preventDefault();
+        var formData=$(this).serialize();
+        var fullUrl = window.location.href;
+        if (fullUrl == "http://127.0.0.1:8000/") {
+            var finalUrl = fullUrl+"?"+formData;
+            console.log("main page");
+        } else {
+            var finalUrl = fullUrl+"&"+formData;
+            console.log("not empty");
+        }
+        window.location.href = finalUrl;
+    });
 </script>
 
-</body>
 </html>
