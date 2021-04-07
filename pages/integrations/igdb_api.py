@@ -12,16 +12,22 @@ class IgdbAPI:
             'Authorization': f'Bearer {settings.IGDB_ACCESS_TOKEN}'
         }
 
-    def get_games_test(self, data):
-        games = requests.post(self.__url_games, headers=self.__headers, data=data).json()
+    def get_game(self, id):
+        body = f'fields name, platforms.name, genres.name, screenshots.url, ' \
+               f'aggregated_rating, rating, summary, first_release_date; where id = {id};'
+        game = requests.post(self.__url_games, headers=self.__headers, data=body).json()
+        return game
+
+    def get_games_list(self, body):
+        games = requests.post(self.__url_games, headers=self.__headers, data=body).json()
         return games
 
     def get_platforms(self):
-        data = 'fields name; limit 500;'
-        platforms = requests.post(self.__url_platforms, headers=self.__headers, data=data).json()
+        body = 'fields name; limit 500;'
+        platforms = requests.post(self.__url_platforms, headers=self.__headers, data=body).json()
         return platforms
 
     def get_genres(self):
-        data = 'fields name; limit 500;'
-        genres = requests.post(self.__url_genres, headers=self.__headers, data=data).json()
+        body = 'fields name; limit 500;'
+        genres = requests.post(self.__url_genres, headers=self.__headers, data=body).json()
         return genres
