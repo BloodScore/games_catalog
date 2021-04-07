@@ -28,8 +28,13 @@
                 <div class="filters-area">
                     <form action="{% url 'games_list_page' %}" method="get" class="filters-form">
                         <label for="platforms">Platforms</label>
-                        <input list="platforms-list" placeholder="Start typing..." id="platforms" name="pl"
-                               class="selector" autocomplete="off" multiple="multiple">
+                        {% if platform %}
+                            <input list="platforms-list" placeholder="Start typing..." id="platforms" name="pl"
+                                   class="selector" autocomplete="off" multiple="multiple" value="{{ platform }}">
+                        {% else %}
+                            <input list="platforms-list" placeholder="Start typing..." id="platforms" name="pl"
+                                       class="selector" autocomplete="off" multiple="multiple">
+                        {% endif %}
                         <datalist id="platforms-list">
                             {% for platform in platforms %}
                                 <option>{{ platform.name }}</option>
@@ -37,8 +42,13 @@
                         </datalist>
 
                         <label for="genres">Genres</label>
-                        <input list="genres-list" placeholder="Start typing..." id="genres" name="gn"
-                               class="selector" autocomplete="off"  multiple="multiple">
+                        {% if genre %}
+                            <input list="genres-list" placeholder="Start typing..." id="genres" name="gn"
+                                   class="selector" autocomplete="off"  multiple="multiple" value="{{ genre }}">
+                        {% else %}
+                            <input list="genres-list" placeholder="Start typing..." id="genres" name="gn"
+                                   class="selector" autocomplete="off"  multiple="multiple">
+                        {% endif %}
                         <datalist id="genres-list">
                             {% for genre in genres %}
                                 <option>{{ genre.name }}</option>
@@ -46,9 +56,9 @@
                         </datalist>
 
                         <label for="rating">User rating</label>
-                        <input type="range" value="50" min="1" max="100" id="rating" name="ra"
+                        <input type="range" value="{{ rating }}" min="1" max="100" id="rating" name="ra"
                                oninput="this.nextElementSibling.value = this.value" style="width: 85%">
-                        <output>50</output>
+                        <output>{{ rating }}</output>
                         <input type="submit" class="apply-filters" value="Apply">
                     </form>
                 </div>
@@ -59,8 +69,12 @@
             </button>
 
 
-            <form id="search_form" autocomplete="off" action="{% url 'games_list_page' %}" method="get">
-                <input type="search" id="query" name="q" placeholder="Search...">
+            <form id="search_form" autocomplete="off" action="{% url 'games_list_page' %}" method="get" class="search-form">
+                {% if query %}
+                    <input type="search" id="query" name="q" placeholder="Search..." value="{{ query }}">
+                {% else %}
+                    <input type="search" id="query" name="q" placeholder="Search...">
+                {% endif %}
                 <button type="submit" class="search-icon">
                     <img src="{% static 'images/search.png' %}" width="30" height="30">
                 </button>
@@ -103,14 +117,37 @@
     $('.filters-form').on('submit',function(e){
         e.preventDefault();
         var formData=$(this).serialize();
+        var queryData=$('.search-form').serialize();
         var fullUrl = window.location.href;
-        if (fullUrl == "http://127.0.0.1:8000/") {
-            var finalUrl = fullUrl+"?"+formData;
-            console.log("main page");
-        } else {
-            var finalUrl = fullUrl+"&"+formData;
-            console.log("not empty");
+
+        if (queryData) {
+            var finalUrl = "http://127.0.0.1:8000/" + "?" + queryData + "&" + formData;
+            console.log(1);
         }
+        else {
+            var finalUrl = "http://127.0.0.1:8000/" + "?" + formData;
+            console.log(2);
+        }
+
+        window.location.href = finalUrl;
+    });
+
+    $('.search-form').on('submit',function(e){
+        e.preventDefault();
+        var formData=$('.filters-form').serialize();
+        var queryData=$(this).serialize();
+        var fullUrl = window.location.href;
+        console.log('search-form triggered');
+
+        if (queryData) {
+            console.log(queryData);
+            var finalUrl = "http://127.0.0.1:8000/" + "?" + queryData + "&" + formData;
+        }
+        else {
+            console.log('nixuya');
+            var finalUrl = "http://127.0.0.1:8000/" + "?" + formData;
+        }
+
         window.location.href = finalUrl;
     });
 </script>
