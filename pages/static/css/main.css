@@ -46,6 +46,11 @@ html, body {
     background-color: white;
 }
 
+.row h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
 .cards {
     margin: auto;
     margin-top: 60px;
