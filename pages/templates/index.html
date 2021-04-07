@@ -122,11 +122,9 @@
 
         if (queryData) {
             var finalUrl = "http://127.0.0.1:8000/" + "?" + queryData + "&" + formData;
-            console.log(1);
         }
         else {
             var finalUrl = "http://127.0.0.1:8000/" + "?" + formData;
-            console.log(2);
         }
 
         window.location.href = finalUrl;
@@ -137,14 +135,11 @@
         var formData=$('.filters-form').serialize();
         var queryData=$(this).serialize();
         var fullUrl = window.location.href;
-        console.log('search-form triggered');
 
         if (queryData) {
-            console.log(queryData);
             var finalUrl = "http://127.0.0.1:8000/" + "?" + queryData + "&" + formData;
         }
         else {
-            console.log('nixuya');
             var finalUrl = "http://127.0.0.1:8000/" + "?" + formData;
         }
 
