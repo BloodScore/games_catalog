@@ -332,3 +332,7 @@ html, body {
     margin-left: 15px;
     padding: 0 7px;
 }
+
+.text-area {
+    margin-bottom: 3px;
+}
