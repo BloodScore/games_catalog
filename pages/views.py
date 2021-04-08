@@ -67,14 +67,17 @@ def detailed_page(request, id, name):
     igdb_api = IgdbAPI()
     game = igdb_api.get_game(id)
 
+    name = name.replace(':', '')
+
     twitter_api = TwitterApi()
     tweets = twitter_api.get_tweets(name)
 
-    for tweet in tweets['data']:
-        tweet['created_at'] = tweet['created_at'][:10] + ' ' + tweet['created_at'][11:19]
+    if tweets.get('data'):
+        for tweet in tweets['data']:
+            tweet['created_at'] = tweet['created_at'][:10] + ' ' + tweet['created_at'][11:19]
 
-        for author in tweets['includes']['users']:
-            if author['id'] == tweet['author_id']:
-                tweet['author_nickname'] = author['username']
+            for author in tweets['includes']['users']:
+                if author['id'] == tweet['author_id']:
+                    tweet['author_nickname'] = author['username']
 
     return render(request, 'detailed_page.html', context={'game': game[0], 'tweets': tweets})

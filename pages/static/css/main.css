@@ -336,3 +336,8 @@ html, body {
 .text-area {
     margin-bottom: 3px;
 }
+
+.col h2 {
+    margin-top: 30px;
+    text-align: center;
+}

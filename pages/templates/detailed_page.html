@@ -64,15 +64,19 @@
 
             <div class="col">
                 <p class="capt" style="margin-top: 37px; margin-left: 15px;">#{{ game.name }} Tweets</p>
-                {% for tweet in tweets.data %}
-                    <div class="tweet">
-                        <div class="text-area">
-                            <span>{{ tweet.text }}</span>
+                {% if tweets.data %}
+                    {% for tweet in tweets.data %}
+                        <div class="tweet">
+                            <div class="text-area">
+                                <span>{{ tweet.text }}</span>
+                            </div>
+                            <span style="display: inline-block">{{ tweet.created_at }}</span>
+                            <span style="display: inline-block; float: right">@{{ tweet.author_nickname }}</span>
                         </div>
-                        <span style="display: inline-block">{{ tweet.created_at }}</span>
-                        <span style="display: inline-block; float: right">@{{ tweet.author_nickname }}</span>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    <h2>No tweets found!</h2>
+                {% endif %}
             </div>
         </div>
     </div>
