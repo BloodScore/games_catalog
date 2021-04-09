@@ -46,7 +46,7 @@
                 </div>
                 <div class="rating" style="background-color: orange;">
                     <span style="float: left">Critics</span>
-                    <span style="float: right">{{ aggregated_rating }}</span>
+                    <span style="float: right">{{ game.aggregated_rating|floatformat }}</span>
                 </div>
                 <p class="capt" style="margin-top: 50px">Genres</p>
                 <div class="genres">
@@ -64,51 +64,19 @@
 
             <div class="col">
                 <p class="capt" style="margin-top: 37px; margin-left: 15px;">#{{ game.name }} Tweets</p>
-                <div class="tweet">
-                    <span>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                        incididunt ut labore et dolore magna aliqua. Posuere sollicitudin aliquam ultrices
-                        sagittis orci a scelerisque purus semper.
-                    </span>
-                    <span style="display: inline-block; margin-top: 2px">15.03.2018 20:20</span>
-                    <span style="display: inline-block; float: right; margin-top: 2px">@tweet_author</span>
-                </div>
-                <div class="tweet">
-                    <span>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                        incididunt ut labore et dolore magna aliqua. Posuere sollicitudin aliquam ultrices
-                        sagittis orci a scelerisque purus semper.
-                    </span>
-                    <span style="display: inline-block; margin-top: 2px">15.03.2018 20:20</span>
-                    <span style="display: inline-block; float: right; margin-top: 2px">@tweet_author</span>
-                </div>
-                <div class="tweet">
-                    <span>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                        incididunt ut labore et dolore magna aliqua. Posuere sollicitudin aliquam ultrices
-                        sagittis orci a scelerisque purus semper.
-                    </span>
-                    <span style="display: inline-block; margin-top: 2px">15.03.2018 20:20</span>
-                    <span style="display: inline-block; float: right; margin-top: 2px">@tweet_author</span>
-                </div>
-                <div class="tweet">
-                    <span>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                        incididunt ut labore et dolore magna aliqua. Posuere sollicitudin aliquam ultrices
-                        sagittis orci a scelerisque purus semper.
-                    </span>
-                    <span style="display: inline-block; margin-top: 2px">15.03.2018 20:20</span>
-                    <span style="display: inline-block; float: right; margin-top: 2px">@tweet_author</span>
-                </div>
-                <div class="tweet">
-                    <span>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                        incididunt ut labore et dolore magna aliqua. Posuere sollicitudin aliquam ultrices
-                        sagittis orci a scelerisque purus semper.
-                    </span>
-                    <span style="display: inline-block; margin-top: 2px">15.03.2018 20:20</span>
-                    <span style="display: inline-block; float: right; margin-top: 2px">@tweet_author</span>
-                </div>
+                {% if tweets.data %}
+                    {% for tweet in tweets.data %}
+                        <div class="tweet">
+                            <div class="text-area">
+                                <span>{{ tweet.text }}</span>
+                            </div>
+                            <span style="display: inline-block">{{ tweet.created_at }}</span>
+                            <span style="display: inline-block; float: right">@{{ tweet.author_nickname }}</span>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <h2>No tweets found!</h2>
+                {% endif %}
             </div>
         </div>
     </div>

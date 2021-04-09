@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from .integrations.igdb_api import IgdbAPI
+from .integrations.twitter_api import TwitterApi
 
 
 def index(request):
-    api = IgdbAPI()
+    igdb_api = IgdbAPI()
     query = request.GET.get('q')
     platform = request.GET.get('pl')
     genre = request.GET.get('gn')
@@ -11,8 +12,8 @@ def index(request):
     genres_id = []
     platforms_id = []
 
-    platforms_list = [platform for platform in api.get_platforms()]
-    genres_list = [genre for genre in api.get_genres()]
+    platforms_list = [platform for platform in igdb_api.get_platforms()]
+    genres_list = [genre for genre in igdb_api.get_genres()]
 
     if genre:
         for genre_name in genre.split(','):
@@ -48,7 +49,7 @@ def index(request):
 
     body = f'{query_filter}{where_string}{platforms_filter}{genres_filter}{rating_filter}{fields_string}'
 
-    games_list = api.get_games_list(body)
+    games_list = igdb_api.get_games_list(body)
     games_list = [game for game in games_list if game.get('cover')]
 
     return render(request, 'index.html', context={
@@ -63,7 +64,20 @@ def index(request):
 
 
 def detailed_page(request, id):
-    api = IgdbAPI()
-    game = api.get_game(id)
+    igdb_api = IgdbAPI()
+    game = igdb_api.get_game(id)
 
-    return render(request, 'detailed_page.html', context={'game': game[0]})
+    name = game[0]['name'].replace(':', '')
+
+    twitter_api = TwitterApi()
+    tweets = twitter_api.get_tweets(name)
+
+    if tweets.get('data'):
+        for tweet in tweets['data']:
+            tweet['created_at'] = tweet['created_at'][:10] + ' ' + tweet['created_at'][11:19]
+
+            for author in tweets['includes']['users']:
+                if author['id'] == tweet['author_id']:
+                    tweet['author_nickname'] = author['username']
+
+    return render(request, 'detailed_page.html', context={'game': game[0], 'tweets': tweets})
