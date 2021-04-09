@@ -10,6 +10,10 @@ class TwitterApi:
         }
 
     def get_tweets(self, game_name):
-        params = f'query=%23{game_name} lang:en&tweet.fields=created_at&expansions=author_id'
-        tweets = requests.get(self.__url, params, headers=self.__headers).json()
+        payload = {
+            'query': f'#{game_name} lang:en',
+            'tweet.fields': 'created_at',
+            'expansions': 'author_id'
+        }
+        tweets = requests.get(self.__url, params=payload, headers=self.__headers).json()
         return tweets

@@ -63,11 +63,11 @@ def index(request):
                 })
 
 
-def detailed_page(request, id, name):
+def detailed_page(request, id):
     igdb_api = IgdbAPI()
     game = igdb_api.get_game(id)
 
-    name = name.replace(':', '')
+    name = game[0]['name'].replace(':', '')
 
     twitter_api = TwitterApi()
     tweets = twitter_api.get_tweets(name)
