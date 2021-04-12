@@ -12,8 +12,21 @@
 </head>
 <body>
         <header class="main_page_header">
-            <img class="logo" src="{% static 'images/logo.png' %}" width="50" height="50">
-            <p class="title">GameMuster</p>
+            <div class="logo-and-title">
+                <a href="{% url 'games_list_page' %}"><img class="logo" src="{% static 'images/logo.png' %}" width="50" height="50"></a>
+                <a href="{% url 'games_list_page' %}" style="color: white"><p class="title">GameMuster</p></a>
+            </div>
+            <div class="profile-buttons">
+                {% if request.user.is_authenticated %}
+                    <p class="hello-user">Hello, <a href="{% url 'profile' %}" style="color: white"><span>{{ request.user }}!</span></a></p>
+                    <button class="musts-btn">My MUSTs</button>
+                    <button><a href="{% url 'logout' %}">Log out</a></button>
+                {% else %}
+                    <button><a href="{% url 'register_page' %}">Sign up</a></button>
+                    <span class="or">or</span>
+                    <button><a href="{% url 'login' %}">Log in</a></button>
+                {% endif %}
+            </div>
         </header>
         {% block content %}
         <div class="drop_and_search_container" id="search_container">

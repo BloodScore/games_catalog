@@ -6,20 +6,74 @@ html, body {
     background-color: red;
     color: white;
     border-bottom: 2px solid black;
+    padding: 10px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.logo {
-    display: inline-block;
-    margin-left: 10px;
-    margin-bottom: 15px;
+.logo-and-title {
+    display: flex;
+    align-items: center;
 }
 
-.title {
+.main_page_header .title {
+    margin-top: 12px;
+    margin-left: 8px;
     font-size: 40px;
-    display: inline-block;
-    margin-bottom: 0px;
+}
+
+.main_page_header .hello-user {
+    font-size: 23px;
+    margin-top: 18px;
+    margin-right: 40px;
+}
+
+.main_page_header .hello-user span {
+    text-decoration: underline;
+}
+
+.main_page_header .profile-buttons a {
+    color: red;
+    text-decoration: none;
+}
+
+.main_page_header .logo-and-title a {
+    color: white;
+    text-decoration: none;
+}
+
+.main_page_header .profile-buttons {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.profile-buttons button {
+    background-color: white;
+    color: red;
+    border: none;
+    border-radius: 1px;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.profile-buttons .musts-btn {
+    background-color: lime;
+    color: white;
+    border: none;
+    border-radius: 1px;
+    font-size: 20px;
+    font-weight: 900;
+    margin-right: 10px;
+}
+
+.profile-buttons .or {
+    font-size: 18px;
+    font-weight: 900;
+    margin-right: 10px;
     margin-left: 10px;
-    margin-top: 5px;
 }
 
 .drop_and_search_container{
@@ -340,4 +394,69 @@ html, body {
 .col h2 {
     margin-top: 30px;
     text-align: center;
+}
+
+.form-container {
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 5%;
+    text-align: center;
+    margin-bottom: 5%;
+}
+
+.form-container input {
+    border: none;
+    outline: none;
+    border-left: 2px solid gray;
+    border-bottom: 2px solid gray;
+    padding-left: 5px;
+    width: 40%;
+    margin-bottom: 10px;
+}
+
+.form-container h1 {
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.form-container button {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 1px;
+    font-weight: 900;
+    font-size: 25px;
+}
+
+.profile-container {
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 7%;
+    text-align: center;
+    margin-bottom: 5%;
+}
+
+.profile-container input {
+    border: none;
+    outline: none;
+    border-left: 3px solid gray;
+    padding-left: 5px;
+    width: 40%;
+    margin-bottom: 10px;
+    float: left;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.profile-container span {
+    float: right;
+    margin-right: 5px;
+    color: gray;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.profile-container h1 {
+    margin-bottom: 20px;
+    font-weight: 600;
 }

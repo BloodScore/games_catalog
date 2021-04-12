@@ -14,6 +14,10 @@ import environ
 import os
 from pathlib import Path
 
+
+AUTH_USER_MODEL = 'pages.CustomUser'
+DATE_INPUT_FORMATS = ['%d-%m-%Y']
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -78,8 +82,12 @@ WSGI_APPLICATION = 'games_catalog.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'games_db',
+        'USER': 'dima',
+        'PASSWORD': '1111',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
