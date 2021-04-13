@@ -1,0 +1,18 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="update-profile-container">
+        <h1>Update Profile</h1>
+            <form method="post" action="{% url 'update_profile' %}">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="row g-0">
+                        <div class="col"><span>{{ field.label }}</span></div>
+                        <div class="col">{{ field }}</div>
+                    </div>
+                {% endfor %}
+                <button type="submit">Save</button>
+            </form>
+    </div>
+{% endblock %}

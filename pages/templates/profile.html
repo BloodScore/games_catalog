@@ -10,6 +10,7 @@
                     <div class="col">{{ field }}</div>
                 </div>
             {% endfor %}
-<!--        {{ form.as_p }}-->
+            <button class="update-btn"><a href="{% url 'update_profile' %}">Update</a></button>
+            <button class="delete-btn"><a href="{% url 'delete_profile' %}">Delete</a></button>
     </div>
 {% endblock %}

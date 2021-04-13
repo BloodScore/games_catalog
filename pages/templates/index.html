@@ -18,7 +18,7 @@
             </div>
             <div class="profile-buttons">
                 {% if request.user.is_authenticated %}
-                    <p class="hello-user">Hello, <a href="{% url 'profile' %}" style="color: white"><span>{{ request.user }}!</span></a></p>
+                    <p class="hello-user">Hello, <a href="{% url 'profile' %}" style="color: white; display: inline;"><span>{{ request.user }}!</span></a></p>
                     <button class="musts-btn">My MUSTs</button>
                     <button><a href="{% url 'logout' %}">Log out</a></button>
                 {% else %}
