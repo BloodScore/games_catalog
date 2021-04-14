@@ -50,7 +50,8 @@ class CustomUserChangeForm(ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder': 'Email'}))
     first_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'First name'}))
     last_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Last name'}))
-    birthday = forms.DateField(widget=forms.DateInput(attrs={'placeholder': 'Birthday'}))
+    birthday = forms.DateField(widget=forms.DateInput(attrs={'placeholder': 'Birthday (day-month-year)'}),
+                               input_formats=settings.DATE_INPUT_FORMATS)
 
     class Meta:
         model = CustomUser
