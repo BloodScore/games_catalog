@@ -1,0 +1,16 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="profile-container">
+        <h1>My Profile</h1>
+            {% for field in form %}
+                <div class="row g-0">
+                    <div class="col"><span>{{ field.label }}</span></div>
+                    <div class="col">{{ field }}</div>
+                </div>
+            {% endfor %}
+            <button class="update-btn"><a href="{% url 'update_profile' %}">Update</a></button>
+            <button class="delete-btn"><a href="{% url 'delete_profile' %}">Delete</a></button>
+    </div>
+{% endblock %}

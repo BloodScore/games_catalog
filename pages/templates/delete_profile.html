@@ -1,0 +1,13 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="form-container" style="margin-top: 10%;">
+        <h1>Are you sure you want to delete your profile?</h1>
+        <form method="post" action="{% url 'delete_profile' %}">
+            {% csrf_token %}
+            <button class="cancel-btn"><a href="{% url 'profile' %}">Cancel</a></button>
+            <button type="submit" style="width: 100px;">Delete</button>
+        </form>
+    </div>
+{% endblock %}

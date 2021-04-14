@@ -1,6 +1,17 @@
-from django.shortcuts import render
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
 from .integrations.igdb_api import IgdbAPI
 from .integrations.twitter_api import TwitterApi
+from .forms import CreateCustomUserForm, LoginForm, CustomUserInfoForm, EmailForm, PasswordResetForm, \
+    CustomUserChangeForm
+from .tokens import account_activation_token, password_reset_token
+from .models import CustomUser
 
 
 def index(request):
@@ -81,3 +92,163 @@ def detailed_page(request, id):
                     tweet['author_nickname'] = author['username']
 
     return render(request, 'detailed_page.html', context={'game': game[0], 'tweets': tweets})
+
+
+def register(request):
+    if request.user.is_authenticated:
+        return redirect('games_list_page')
+
+    if request.method == 'POST':
+        form = CreateCustomUserForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.is_active = False
+            user.save()
+            domain, uid, token = create_mail_link(request, user, 'activate')
+            link = f'http://{domain}/activate/{uid}/{token}/'
+            send_mail(
+                'GameMuster Verification mail',
+                f'Hello, {user.username}! Thanks for registration! Click this link to activate your account: {link}',
+                settings.EMAIL_HOST_USER,
+                [user.email],
+                fail_silently=False
+            )
+            return redirect('account_activation_sent')
+    else:
+        form = CreateCustomUserForm()
+
+    return render(request, 'register.html', context={'form': form})
+
+
+def login_user(request):
+    if request.user.is_authenticated:
+        return redirect('games_list_page')
+
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            credentials = form.cleaned_data
+            user = authenticate(request, username=credentials['username'], password=credentials['password'])
+            if user:
+                login(request, user)
+                return redirect('games_list_page')
+            else:
+                messages.info(request, 'Username or password is incorrect!')
+    else:
+        form = LoginForm()
+
+    return render(request, 'login.html', context={'form': form})
+
+
+def account_activation_sent(request):
+    return render(request, 'account_activation_sent.html')
+
+
+def activate(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = CustomUser.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = None
+
+    if user and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        return redirect('games_list_page')
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('games_list_page')
+
+
+def profile(request):
+    if not request.user.is_authenticated:
+        return redirect('games_list_page')
+
+    form = CustomUserInfoForm(instance=request.user)
+    return render(request, 'profile.html', context={'form': form})
+
+
+def email_to_reset_password(request):
+    if request.method == 'POST':
+        form = EmailForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            user = CustomUser.objects.get(email=email)
+            domain, uid, token = create_mail_link(request, user, 'reset')
+            link = f'http://{domain}/reset/{uid}/{token}/'
+            send_mail(
+                'GameMuster password reset mail',
+                f'Hello, {user.username}! Click this link to go to password reset page: {link}',
+                settings.EMAIL_HOST_USER,
+                [email],
+                fail_silently=False
+            )
+            return redirect('reset_password_mail_sent')
+    else:
+        form = EmailForm()
+    return render(request, 'email_form.html', context={'form': form})
+
+
+def reset_password_mail_sent(request):
+    return render(request, 'reset_password_mail_sent.html')
+
+
+def reset_password(request, uidb64, token):
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            password = form.cleaned_data['password1']
+            print(password)
+            try:
+                uid = force_text(urlsafe_base64_decode(uidb64))
+                user = CustomUser.objects.get(pk=uid)
+            except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+                user = None
+
+            if user and password_reset_token.check_token(user, token):
+                user.set_password(password)
+                user.save()
+                return redirect('login')
+    else:
+        form = PasswordResetForm()
+    return render(request, 'reset_password.html', context={'form': form, 'uidb64': uidb64, 'token': token})
+
+
+def create_mail_link(request, user, what_for):
+    domain = get_current_site(request).domain
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    if what_for == 'activate':
+        token = account_activation_token.make_token(user)
+    else:
+        token = password_reset_token.make_token(user)
+    return domain, uid, token
+
+
+def update_profile(request):
+    if not request.user.is_authenticated:
+        return redirect('games_list_page')
+
+    if request.method == 'POST':
+        form = CustomUserChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = CustomUserChangeForm(instance=request.user)
+
+    return render(request, 'update_profile.html', context={'form': form})
+
+
+def delete_profile(request):
+    if not request.user.is_authenticated:
+        return redirect('games_list_page')
+
+    user = request.user
+    if request.method == 'POST':
+        user.delete()
+        return redirect('games_list_page')
+
+    return render(request, 'delete_profile.html')
