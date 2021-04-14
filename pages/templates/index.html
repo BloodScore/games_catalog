@@ -19,7 +19,7 @@
             <div class="profile-buttons">
                 {% if request.user.is_authenticated %}
                     <p class="hello-user">Hello, <a href="{% url 'profile' %}" style="color: white; display: inline;"><span>{{ request.user }}!</span></a></p>
-                    <button class="musts-btn">My MUSTs</button>
+                    <button class="musts-btn"><a href="{% url 'fav_games' %}" style="color: white">My MUSTs</a></button>
                     <button><a href="{% url 'logout' %}">Log out</a></button>
                 {% else %}
                     <button><a href="{% url 'register_page' %}">Sign up</a></button>
@@ -113,8 +113,8 @@
                                         <p>{{ genre.name }}</p>
                                     {% endfor %}
                                     <div class="buttons">
-                                        <button><a href="{% url 'game_page' id=game.id %}" style="text-decoration: none; color: black"><b>Open</b></a></button>
-                                        <button style="color: black"><b>MUST</b></button>
+                                        <button><a href="{% url 'game_page' id=game.id %}">Open</a></button>
+                                        <button style="color: black"><a href="{% url 'must' id=game.id %}">MUST</a></button>
                                     </div>
                                 </div>
                             </div>

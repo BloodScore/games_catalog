@@ -1,5 +1,6 @@
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.sites.shortcuts import get_current_site
+from django.http import HttpResponse
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.shortcuts import render, redirect
@@ -11,7 +12,7 @@ from .integrations.twitter_api import TwitterApi
 from .forms import CreateCustomUserForm, LoginForm, CustomUserInfoForm, EmailForm, PasswordResetForm, \
     CustomUserChangeForm
 from .tokens import account_activation_token, password_reset_token
-from .models import CustomUser
+from .models import CustomUser, MustGame
 
 
 def index(request):
@@ -252,3 +253,21 @@ def delete_profile(request):
         return redirect('games_list_page')
 
     return render(request, 'delete_profile.html')
+
+
+def fav_games(request):
+    return render(request, 'fav_games.html')
+
+
+def must(request, id):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    must_game = MustGame.objects.filter(game_id=id)
+
+    if must_game and must_game[0].owner.id == request.user.id:
+        pass
+    else:
+        MustGame.objects.create(owner=request.user, game_id=id)
+
+    return redirect('games_list_page')
