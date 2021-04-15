@@ -14,7 +14,7 @@ class IgdbAPI:
 
     def get_game(self, id):
         body = f'fields name, platforms.name, genres.name, screenshots.url, ' \
-               f'aggregated_rating, rating, summary, first_release_date; where id = {id};'
+               f'aggregated_rating, rating, cover.url, summary, first_release_date; where id = {id};'
         game = requests.post(self.__url_games, headers=self.__headers, data=body).json()
         return game
 

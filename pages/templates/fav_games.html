@@ -9,15 +9,13 @@
                         <div class="col-lg-4 col-xxl-3">
                             <div class="game_card">
                                 <img src="{{ game.cover.url }}" class="img-fluid">
-                                <div class="caption">
+                                <div class="caption" style="background: rgba(60, 49, 113, 0.8)">
                                     <span>{{ game.name }}</span>
-                                    {% for genre in game.genres %}
-                                        <p>{{ genre.name }}</p>
-                                    {% endfor %}
-                                    <div class="buttons">
-                                        <button><a href="{% url 'game_page' id=game.id %}" style="text-decoration: none; color: black"><b>Open</b></a></button>
-                                        <button style="color: black"><b>MUST</b></button>
+                                    <div class="must-card-buttons">
+                                        <button><a href="{% url 'game_page' id=game.id %}"><b>Open</b></a></button>
+                                        <button style="background-color: red"><a href="{% url 'unmust' id=game.id %}"><b>UnMUST</b></a></button>
                                     </div>
+                                    <span style="font-size: 13px; margin-top: 7px;">Users added: {{ game.users_added }}</span>
                                 </div>
                             </div>
                         </div>

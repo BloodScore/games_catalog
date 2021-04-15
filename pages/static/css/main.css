@@ -599,3 +599,28 @@ html, body {
     text-decoration: none;
     color: white;
 }
+
+.must-card-buttons {
+    margin-top: 7px;
+}
+
+.must-card-buttons button {
+    border: none;
+    border-radius: 1px;
+    color: white;
+    background-color: green;
+    margin-right: 10px;
+}
+
+.must-card-buttons a {
+    text-decoration: none;
+    color: white;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}
+
+.must-card-buttons a:hover {
+    text-decoration: none;
+    color: white;
+}

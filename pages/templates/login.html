@@ -10,6 +10,7 @@
             {% for message in messages %}
                 <p>{{ message }}</p>
             {% endfor %}
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
             <button type="submit">Log in!</button>
         </form>
         <div><a href="{% url 'email_to_reset_password' %}">Forgot your password?</a></div>

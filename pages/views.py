@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from .integrations.igdb_api import IgdbAPI
 from .integrations.twitter_api import TwitterApi
 from .forms import CreateCustomUserForm, LoginForm, CustomUserInfoForm, EmailForm, PasswordResetForm, \
@@ -126,13 +127,17 @@ def login_user(request):
         return redirect('games_list_page')
 
     if request.method == 'POST':
+        next_url = request.POST.get('next')
         form = LoginForm(request.POST)
         if form.is_valid():
             credentials = form.cleaned_data
             user = authenticate(request, username=credentials['username'], password=credentials['password'])
             if user:
                 login(request, user)
-                return redirect('games_list_page')
+                if next_url:
+                    return redirect(next_url)
+                else:
+                    return redirect('games_list_page')
             else:
                 messages.info(request, 'Username or password is incorrect!')
     else:
@@ -164,10 +169,8 @@ def logout_user(request):
     return redirect('games_list_page')
 
 
+@login_required
 def profile(request):
-    if not request.user.is_authenticated:
-        return redirect('games_list_page')
-
     form = CustomUserInfoForm(instance=request.user)
     return render(request, 'profile.html', context={'form': form})
 
@@ -228,10 +231,8 @@ def create_mail_link(request, user, what_for):
     return domain, uid, token
 
 
+@login_required
 def update_profile(request):
-    if not request.user.is_authenticated:
-        return redirect('games_list_page')
-
     if request.method == 'POST':
         form = CustomUserChangeForm(request.POST, instance=request.user)
         if form.is_valid():
@@ -243,10 +244,8 @@ def update_profile(request):
     return render(request, 'update_profile.html', context={'form': form})
 
 
+@login_required
 def delete_profile(request):
-    if not request.user.is_authenticated:
-        return redirect('games_list_page')
-
     user = request.user
     if request.method == 'POST':
         user.delete()
@@ -255,19 +254,37 @@ def delete_profile(request):
     return render(request, 'delete_profile.html')
 
 
+@login_required
 def fav_games(request):
-    return render(request, 'fav_games.html')
+    igdb_api = IgdbAPI()
+    must_games = MustGame.objects.filter(owner=request.user)
+    games = []
+
+    for must_game in must_games:
+        game = igdb_api.get_game(must_game.game_id)[0]
+        game['users_added'] = must_game.users_added
+        games.append(game)
+
+    return render(request, 'fav_games.html', context={'games': games})
 
 
+@login_required
 def must(request, id):
-    if not request.user.is_authenticated:
-        return redirect('login')
+    users_added = len(MustGame.objects.filter(game_id=id))
 
-    must_game = MustGame.objects.filter(game_id=id)
-
-    if must_game and must_game[0].owner.id == request.user.id:
-        pass
-    else:
-        MustGame.objects.create(owner=request.user, game_id=id)
+    _, created = MustGame.objects.get_or_create(owner=request.user, game_id=id, users_added=users_added)
+    if created:
+        for game in MustGame.objects.filter(game_id=id):
+            game.users_added += 1
+            game.save()
 
     return redirect('games_list_page')
+
+
+@login_required
+def unmust(request, id):
+    MustGame.objects.filter(owner=request.user, game_id=id).delete()
+    for game in MustGame.objects.filter(game_id=id):
+        game.users_added -= 1
+        game.save()
+    return redirect('fav_games')
