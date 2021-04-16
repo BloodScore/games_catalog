@@ -275,7 +275,7 @@ def must(request):
     users_added = len(MustGame.objects.filter(game_id=id, is_deleted=False))
 
     must_game, created = MustGame.objects.get_or_create(owner=request.user, game_id=id, users_added=users_added)
-    print(created)
+    
     if created:
         MustGame.objects.filter(game_id=id).update(users_added=F('users_added') + 1)
     elif must_game.is_deleted:
