@@ -1,5 +1,6 @@
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.sites.shortcuts import get_current_site
+from django.db.models import F
 from django.http import HttpResponse
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -269,22 +270,20 @@ def fav_games(request):
 
 
 @login_required
-def must(request, id):
+def must(request):
+    id = request.POST.get('game_id')
     users_added = len(MustGame.objects.filter(game_id=id))
 
     _, created = MustGame.objects.get_or_create(owner=request.user, game_id=id, users_added=users_added)
     if created:
-        for game in MustGame.objects.filter(game_id=id):
-            game.users_added += 1
-            game.save()
+        MustGame.objects.filter(game_id=id).update(users_added=F('users_added') + 1)
 
-    return redirect('games_list_page')
+    return HttpResponse(status=200)
 
 
 @login_required
-def unmust(request, id):
+def unmust(request):
+    id = request.POST.get('game_id')
     MustGame.objects.filter(owner=request.user, game_id=id).delete()
-    for game in MustGame.objects.filter(game_id=id):
-        game.users_added -= 1
-        game.save()
-    return redirect('fav_games')
+    MustGame.objects.filter(game_id=id).update(users_added=F('users_added') - 1)
+    return HttpResponse(status=200)

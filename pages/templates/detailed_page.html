@@ -7,7 +7,7 @@
             <div class="col-6" style="padding: 30px">
                 <div class="first-row">
                     <span>{{ game.name }}</span>
-                    <button><a href="{% url 'must' id=game.id %}"><b>MUST</b></a></button>
+                    <button onclick="sendAjaxMust({{ game.id }})"><b>MUST</b></a></button>
                 </div>
                 <p style="font-size: 19px; margin-top: 15px">
                     {% for i in game.genres %}

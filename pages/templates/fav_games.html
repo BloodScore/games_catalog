@@ -13,9 +13,9 @@
                                     <span>{{ game.name }}</span>
                                     <div class="must-card-buttons">
                                         <button><a href="{% url 'game_page' id=game.id %}"><b>Open</b></a></button>
-                                        <button style="background-color: red"><a href="{% url 'unmust' id=game.id %}"><b>UnMUST</b></a></button>
+                                        <button id="favgames-unmust-btn-{{ game.id }}" onclick="sendAjaxUnmust({{ game.id }})" style="background-color: red; font-weight: 900">UnMUST</button>
                                     </div>
-                                    <span style="font-size: 13px; margin-top: 7px;">Users added: {{ game.users_added }}</span>
+                                    <span style="font-size: 13px; margin-top: 7px;">Users added: <span style="font-size: 13px; display: inline-block" id="users-added-{{ game.id }}">{{ game.users_added }}</span></span>
                                 </div>
                             </div>
                         </div>

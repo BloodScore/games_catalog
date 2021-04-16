@@ -18,7 +18,7 @@ urlpatterns = [
     path('delete_profile', views.delete_profile, name='delete_profile'),
     path('detailed/<str:id>', views.detailed_page, name='game_page'),
     path('favourite_games', views.fav_games, name='fav_games'),
-    path('must/<str:id>', views.must, name='must'),
-    path('unmust/<str:id>', views.unmust, name='unmust'),
+    path('must', views.must, name='must'),
+    path('unmust', views.unmust, name='unmust'),
     path('', views.index, name='games_list_page'),
 ]
