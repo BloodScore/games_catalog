@@ -258,7 +258,7 @@ def delete_profile(request):
 @login_required
 def fav_games(request):
     igdb_api = IgdbAPI()
-    must_games = MustGame.objects.filter(owner=request.user)
+    must_games = MustGame.objects.filter(owner=request.user, is_deleted=False)
     games = []
 
     for must_game in must_games:
@@ -272,10 +272,15 @@ def fav_games(request):
 @login_required
 def must(request):
     id = request.POST.get('game_id')
-    users_added = len(MustGame.objects.filter(game_id=id))
+    users_added = len(MustGame.objects.filter(game_id=id, is_deleted=False))
 
-    _, created = MustGame.objects.get_or_create(owner=request.user, game_id=id, users_added=users_added)
+    must_game, created = MustGame.objects.get_or_create(owner=request.user, game_id=id, users_added=users_added)
+    print(created)
     if created:
+        MustGame.objects.filter(game_id=id).update(users_added=F('users_added') + 1)
+    elif must_game.is_deleted:
+        must_game.is_deleted = False
+        must_game.save()
         MustGame.objects.filter(game_id=id).update(users_added=F('users_added') + 1)
 
     return HttpResponse(status=200)
@@ -284,6 +289,6 @@ def must(request):
 @login_required
 def unmust(request):
     id = request.POST.get('game_id')
-    MustGame.objects.filter(owner=request.user, game_id=id).delete()
+    MustGame.objects.filter(owner=request.user, game_id=id).update(is_deleted=True)
     MustGame.objects.filter(game_id=id).update(users_added=F('users_added') - 1)
     return HttpResponse(status=200)
