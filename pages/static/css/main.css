@@ -336,10 +336,12 @@ html, body {
 }
 
 .screenshot {
-    display: inline-block;
+    display: block;
     height: 180px;
     width: 180px;
     margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .screenshot img {
@@ -574,4 +576,51 @@ html, body {
     margin: 0 auto;
     margin-top: 15%;
     text-align: center;
+}
+
+.caption .buttons a {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: black;
+    font-weight: 900;
+}
+
+.first-row a {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: white;
+}
+
+.first-row a:hover {
+    text-decoration: none;
+    color: white;
+}
+
+.must-card-buttons {
+    margin-top: 7px;
+}
+
+.must-card-buttons button {
+    border: none;
+    border-radius: 1px;
+    color: white;
+    background-color: green;
+    margin-right: 10px;
+}
+
+.must-card-buttons a {
+    text-decoration: none;
+    color: white;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}
+
+.must-card-buttons a:hover {
+    text-decoration: none;
+    color: white;
 }

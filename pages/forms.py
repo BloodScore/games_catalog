@@ -19,8 +19,11 @@ class CreateCustomUserForm(UserCreationForm):
 
     def clean(self):
         email = self.cleaned_data.get('email')
+        username = self.cleaned_data.get('username')
         if CustomUser.objects.filter(email=email).exists():
             raise ValidationError("Email exists")
+        if CustomUser.objects.filter(username=username).exists():
+            raise ValidationError("This username is already taken!")
         return self.cleaned_data
 
     class Meta:

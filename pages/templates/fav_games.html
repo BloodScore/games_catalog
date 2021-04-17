@@ -1,0 +1,34 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="cards">
+            <div class="row">
+                {% if games %}
+                    {% for game in games %}
+                        <div class="col-lg-4 col-xxl-3">
+                            <div class="game_card">
+                                <img src="{{ game.cover.url }}" class="img-fluid">
+                                <div class="caption" style="background: rgba(60, 49, 113, 0.8)">
+                                    <span>{{ game.name }}</span>
+                                    <div class="must-card-buttons">
+                                        <button><a href="{% url 'game_page' id=game.id %}"><b>Open</b></a></button>
+                                        <button id="favgames-unmust-btn-{{ game.id }}" onclick="sendAjaxUnmust({{ game.id }})" style="background-color: red; font-weight: 900">UnMUST</button>
+                                    </div>
+                                    <span style="font-size: 13px; margin-top: 7px;">Users added: <span style="font-size: 13px; display: inline-block" id="users-added-{{ game.id }}">{{ game.users_added }}</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <h1>You have no favourite games!</h1>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+        </div>
+{% endblock %}

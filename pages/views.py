@@ -1,17 +1,20 @@
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.sites.shortcuts import get_current_site
+from django.db.models import F
+from django.http import HttpResponse
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from .integrations.igdb_api import IgdbAPI
 from .integrations.twitter_api import TwitterApi
 from .forms import CreateCustomUserForm, LoginForm, CustomUserInfoForm, EmailForm, PasswordResetForm, \
     CustomUserChangeForm
 from .tokens import account_activation_token, password_reset_token
-from .models import CustomUser
+from .models import CustomUser, MustGame
 
 
 def index(request):
@@ -125,13 +128,17 @@ def login_user(request):
         return redirect('games_list_page')
 
     if request.method == 'POST':
+        next_url = request.POST.get('next')
         form = LoginForm(request.POST)
         if form.is_valid():
             credentials = form.cleaned_data
             user = authenticate(request, username=credentials['username'], password=credentials['password'])
             if user:
                 login(request, user)
-                return redirect('games_list_page')
+                if next_url:
+                    return redirect(next_url)
+                else:
+                    return redirect('games_list_page')
             else:
                 messages.info(request, 'Username or password is incorrect!')
     else:
@@ -163,10 +170,8 @@ def logout_user(request):
     return redirect('games_list_page')
 
 
+@login_required
 def profile(request):
-    if not request.user.is_authenticated:
-        return redirect('games_list_page')
-
     form = CustomUserInfoForm(instance=request.user)
     return render(request, 'profile.html', context={'form': form})
 
@@ -227,10 +232,8 @@ def create_mail_link(request, user, what_for):
     return domain, uid, token
 
 
+@login_required
 def update_profile(request):
-    if not request.user.is_authenticated:
-        return redirect('games_list_page')
-
     if request.method == 'POST':
         form = CustomUserChangeForm(request.POST, instance=request.user)
         if form.is_valid():
@@ -242,13 +245,50 @@ def update_profile(request):
     return render(request, 'update_profile.html', context={'form': form})
 
 
+@login_required
 def delete_profile(request):
-    if not request.user.is_authenticated:
-        return redirect('games_list_page')
-
     user = request.user
     if request.method == 'POST':
         user.delete()
         return redirect('games_list_page')
 
     return render(request, 'delete_profile.html')
+
+
+@login_required
+def fav_games(request):
+    igdb_api = IgdbAPI()
+    must_games = MustGame.objects.filter(owner=request.user, is_deleted=False)
+    games = []
+
+    for must_game in must_games:
+        game = igdb_api.get_game(must_game.game_id)[0]
+        game['users_added'] = must_game.users_added
+        games.append(game)
+
+    return render(request, 'fav_games.html', context={'games': games})
+
+
+@login_required
+def must(request):
+    id = request.POST.get('game_id')
+    users_added = len(MustGame.objects.filter(game_id=id, is_deleted=False))
+
+    must_game, created = MustGame.objects.get_or_create(owner=request.user, game_id=id, users_added=users_added)
+    
+    if created:
+        MustGame.objects.filter(game_id=id).update(users_added=F('users_added') + 1)
+    elif must_game.is_deleted:
+        must_game.is_deleted = False
+        must_game.save()
+        MustGame.objects.filter(game_id=id).update(users_added=F('users_added') + 1)
+
+    return HttpResponse(status=200)
+
+
+@login_required
+def unmust(request):
+    id = request.POST.get('game_id')
+    MustGame.objects.filter(owner=request.user, game_id=id).update(is_deleted=True)
+    MustGame.objects.filter(game_id=id).update(users_added=F('users_added') - 1)
+    return HttpResponse(status=200)

@@ -19,7 +19,7 @@
             <div class="profile-buttons">
                 {% if request.user.is_authenticated %}
                     <p class="hello-user">Hello, <a href="{% url 'profile' %}" style="color: white; display: inline;"><span>{{ request.user }}!</span></a></p>
-                    <button class="musts-btn">My MUSTs</button>
+                    <button class="musts-btn"><a href="{% url 'fav_games' %}" style="color: white">My MUSTs</a></button>
                     <button><a href="{% url 'logout' %}">Log out</a></button>
                 {% else %}
                     <button><a href="{% url 'register_page' %}">Sign up</a></button>
@@ -113,8 +113,8 @@
                                         <p>{{ genre.name }}</p>
                                     {% endfor %}
                                     <div class="buttons">
-                                        <button><a href="{% url 'game_page' id=game.id %}" style="text-decoration: none; color: black"><b>Open</b></a></button>
-                                        <button style="color: black"><b>MUST</b></button>
+                                        <button><a href="{% url 'game_page' id=game.id %}">Open</a></button>
+                                        <button onclick="sendAjaxMust({{ game.id }})" style="color: black; font-weight: 900">MUST</button>
                                     </div>
                                 </div>
                             </div>
@@ -168,6 +168,52 @@
 
         window.location.href = finalUrl;
     });
+
+
+    function sendAjaxMust(id){
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'must' %}",
+            data: {
+                game_id: id,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            }
+        });
+    }
+
+
+    function sendAjaxUnmust(id){
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'unmust' %}",
+            data: {
+                game_id: id,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            }
+        });
+        $('#favgames-unmust-btn-' + id).html('ReMUST');
+        $('#favgames-unmust-btn-' + id).css('background-color', 'green');
+        $('#favgames-unmust-btn-' + id).attr('onclick', "sendAjaxRemust("+id+")");
+        var users = parseInt($("#users-added-" + id).text(), 10);
+        $('#users-added-' + id).text(users - 1);
+    }
+
+
+    function sendAjaxRemust(id){
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'must' %}",
+            data: {
+                game_id: id,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            }
+        });
+        $('#favgames-unmust-btn-' + id).html('UnMUST');
+        $('#favgames-unmust-btn-' + id).css('background-color', 'red');
+        $('#favgames-unmust-btn-' + id).attr('onclick', "sendAjaxUnmust("+id+")");
+        var users = parseInt($("#users-added-" + id).text(), 10);
+        $('#users-added-' + id).text(users + 1);
+    }
 </script>
 
 </html>
