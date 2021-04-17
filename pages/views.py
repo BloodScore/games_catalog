@@ -272,7 +272,7 @@ def fav_games(request):
 @login_required
 def must(request):
     id = request.POST.get('game_id')
-    users_added = len(MustGame.objects.filter(game_id=id, is_deleted=False))
+    users_added = MustGame.objects.filter(game_id=id, is_deleted=False).count()
 
     must_game, created = MustGame.objects.get_or_create(owner=request.user, game_id=id, users_added=users_added)
     
