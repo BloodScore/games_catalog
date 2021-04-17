@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
+from django.urls import resolve
 from django.contrib.auth.decorators import login_required
 from .integrations.igdb_api import IgdbAPI
 from .integrations.twitter_api import TwitterApi
@@ -66,6 +67,8 @@ def index(request):
     games_list = igdb_api.get_games_list(body)
     games_list = [game for game in games_list if game.get('cover')]
 
+    # current_url = resolve(request.path_info).url_name
+
     return render(request, 'index.html', context={
                         'games': games_list,
                         'platforms': platforms_list,
@@ -74,6 +77,7 @@ def index(request):
                         'platform': platform,
                         'genre': genre,
                         'rating': rating,
+                        # 'current_url': current_url,
                 })
 
 
