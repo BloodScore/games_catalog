@@ -141,13 +141,13 @@
         e.preventDefault();
         var formData=$(this).serialize();
         var queryData=$('.search-form').serialize();
-        var fullUrl = window.location.href;
+        var fullUrl = window.location.origin;
 
         if (queryData) {
-            var finalUrl = "https://games-muster.herokuapp.com/" + "?" + queryData + "&" + formData;
+            var finalUrl = fullUrl + "/?" + queryData + "&" + formData;
         }
         else {
-            var finalUrl = "https://games-muster.herokuapp.com/" + "?" + formData;
+            var finalUrl = fullUrl + "/?" + formData;
         }
 
         window.location.href = finalUrl;
@@ -157,13 +157,13 @@
         e.preventDefault();
         var formData=$('.filters-form').serialize();
         var queryData=$(this).serialize();
-        var fullUrl = window.location.href;
+        var fullUrl = window.location.origin;
 
         if (queryData) {
-            var finalUrl = "https://games-muster.herokuapp.com/" + "?" + queryData + "&" + formData;
+            var finalUrl = fullUrl + "/?" + queryData + "&" + formData;
         }
         else {
-            var finalUrl = "https://games-muster.herokuapp.com/" + "?" + formData;
+            var finalUrl = fullUrl + "/?" + formData;
         }
 
         window.location.href = finalUrl;
