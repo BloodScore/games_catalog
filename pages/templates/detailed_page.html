@@ -20,7 +20,6 @@
                 </p>
                 <p class="capt">Release Date</p>
                 <p style="font-weight: bold; color: gray">
-<!--                    {{ game.first_release_date|date:"U" }}-->
                     {{ game.first_release_date }}
                 </p>
                 <p class="capt">Screenshots</p>
@@ -50,14 +49,14 @@
                 </div>
                 <p class="capt" style="margin-top: 50px">Genres</p>
                 <div class="genres">
-                    {% for i in game.genres %}
-                        <span>{{ i.name }}</span>
+                    {% for genre in game.genres %}
+                        <span>{{ genre }}</span>
                     {% endfor %}
                 </div>
                 <p class="capt" style="margin-top: 100px">Platforms</p>
                 <div class="genres">
-                    {% for i in game.platforms %}
-                        <span>{{ i.name }}</span>
+                    {% for platform in game.platforms %}
+                        <span>{{ platform }}</span>
                     {% endfor %}
                 </div>
             </div>

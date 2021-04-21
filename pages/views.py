@@ -1,3 +1,4 @@
+import datetime
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import F
@@ -23,48 +24,31 @@ def index(request):
     platform = request.GET.get('pl')
     genre = request.GET.get('gn')
     rating = request.GET.get('ra')
-    genres_id = []
-    platforms_id = []
+    default_games_id = [20950, 75079, 107244]
 
     platforms_list = [platform for platform in igdb_api.get_platforms()]
     genres_list = [genre for genre in igdb_api.get_genres()]
 
-    if genre:
-        for genre_name in genre.split(','):
-            for i in genres_list:
-                if i.get('name') == genre_name:
-                    genres_id.append(i.get('id'))
-                    break
+    if query or genre or platform or rating:
+        games_list = Game.objects.filter(
+                                    data__name__icontains=query if query else ''
+                                ).filter(
+                                    data__rating__gte=int(rating) if rating else 1
+                                )
+        if genre:
+            games_list = [
+                game for game in games_list if
+                len(set(genre.split(',')).intersection(set(game.data['genres']))) == len(genre.split(','))
+            ]
+        if platform:
+            games_list = [
+                game for game in games_list if
+                len(set(platform.split(',')).intersection(set(game.data['platforms']))) == len(platform.split(','))
+            ]
+    else:
+        games_list = [Game.objects.filter(data__id=game_id)[0] for game_id in default_games_id]
 
-    if platform:
-        for platform_name in platform.split(','):
-            for i in platforms_list:
-                if i.get('name') == platform_name:
-                    platforms_id.append(i.get('id'))
-                    break
-
-    platforms_filter = f'platforms = {str(platforms_id)};' if platform else ''
-    genres_filter = f'genres = {str(genres_id)};' if genre else ''
-    rating_filter = f'rating >= {rating};' if rating else ''
-    query_filter = f'search "{query}";' if query else ''
-    where_string = ''
-    fields_string = 'fields name, cover.url, genres.name;'
-
-    if platforms_filter and (genres_filter or rating_filter):
-        platforms_filter = platforms_filter[:-1]
-        platforms_filter += '&'
-
-    if genres_filter and rating_filter:
-        genres_filter = genres_filter[:-1]
-        genres_filter += '&'
-
-    if platforms_filter or genres_filter or rating_filter:
-        where_string = 'where '
-
-    body = f'{query_filter}{where_string}{platforms_filter}{genres_filter}{rating_filter}{fields_string}'
-
-    games_list = igdb_api.get_games_list(body)
-    games_list = [game for game in games_list if game.get('cover')]
+    games_list = [game.data for game in games_list]
 
     return render(request, 'index.html', context={
                         'games': games_list,
@@ -78,10 +62,10 @@ def index(request):
 
 
 def detailed_page(request, id):
-    igdb_api = IgdbAPI()
-    game = igdb_api.get_game(id)
+    game = Game.objects.filter(data__id=int(id))[0].data
+    print(game)
 
-    name = game[0]['name'].replace(':', '')
+    name = game['name'].replace(':', '')
 
     twitter_api = TwitterApi()
     tweets = twitter_api.get_tweets(name)
@@ -94,7 +78,7 @@ def detailed_page(request, id):
                 if author['id'] == tweet['author_id']:
                     tweet['author_nickname'] = author['username']
 
-    return render(request, 'detailed_page.html', context={'game': game[0], 'tweets': tweets})
+    return render(request, 'detailed_page.html', context={'game': game, 'tweets': tweets})
 
 
 def register(request):
@@ -257,12 +241,11 @@ def delete_profile(request):
 
 @login_required
 def fav_games(request):
-    igdb_api = IgdbAPI()
     must_games = MustGame.objects.filter(owner=request.user, is_deleted=False)
     games = []
 
     for must_game in must_games:
-        game = igdb_api.get_game(must_game.game_id)[0]
+        game = Game.objects.filter(data__id=must_game.game_id)[0].data
         game['users_added'] = must_game.users_added
         games.append(game)
 
