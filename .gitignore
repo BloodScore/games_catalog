@@ -4,7 +4,8 @@
 .idea/
 db.sqlite3
 pages/__pycache__/
-pages/migrations/__pycache__/
 games_catalog/__pycache__/
+pages/migrations/__pycache__/
 pages/integrations/__pycache__/
+pages/management/commands/__pycache__/
 .env

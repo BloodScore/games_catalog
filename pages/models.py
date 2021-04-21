@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.db.models import JSONField
 from django.contrib.auth.models import AbstractUser
 
 
@@ -15,3 +16,7 @@ class MustGame(models.Model):
     game_id = models.IntegerField(null=False)
     is_deleted = models.BooleanField(default=False)
     users_added = models.IntegerField(default=0)
+
+
+class Game(models.Model):
+    data = JSONField()

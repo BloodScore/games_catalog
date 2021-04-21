@@ -14,7 +14,7 @@ from .integrations.twitter_api import TwitterApi
 from .forms import CreateCustomUserForm, LoginForm, CustomUserInfoForm, EmailForm, PasswordResetForm, \
     CustomUserChangeForm
 from .tokens import account_activation_token, password_reset_token
-from .models import CustomUser, MustGame
+from .models import CustomUser, MustGame, Game
 
 
 def index(request):
