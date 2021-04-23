@@ -1,4 +1,3 @@
-import datetime
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import F
@@ -63,7 +62,6 @@ def index(request):
 
 def detailed_page(request, id):
     game = Game.objects.filter(data__id=int(id))[0].data
-    print(game)
 
     name = game['name'].replace(':', '')
 
@@ -190,7 +188,7 @@ def reset_password(request, uidb64, token):
         form = PasswordResetForm(request.POST)
         if form.is_valid():
             password = form.cleaned_data['password1']
-            print(password)
+
             try:
                 uid = force_text(urlsafe_base64_decode(uidb64))
                 user = CustomUser.objects.get(pk=uid)

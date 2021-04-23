@@ -143,6 +143,7 @@ EMAIL_USE_TLS = True
 
 LOGIN_URL = 'login'
 
+CELERY_BROKER_URL = 'amqp://localhost'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
