@@ -23,31 +23,39 @@ def index(request):
     platform = request.GET.get('pl')
     genre = request.GET.get('gn')
     rating = request.GET.get('ra')
-    default_games_id = [20950, 75079, 107244]
 
     platforms_list = [platform for platform in igdb_api.get_platforms()]
     genres_list = [genre for genre in igdb_api.get_genres()]
 
     if query or genre or platform or rating:
         games_list = Game.objects.filter(
-                                    data__name__icontains=query if query else ''
-                                ).filter(
-                                    data__rating__gte=int(rating) if rating else 1
-                                )
-        if genre:
-            games_list = [
-                game for game in games_list if
-                len(set(genre.split(',')).intersection(set(game.data['genres']))) == len(genre.split(','))
-            ]
-        if platform:
-            games_list = [
-                game for game in games_list if
-                len(set(platform.split(',')).intersection(set(game.data['platforms']))) == len(platform.split(','))
-            ]
-    else:
-        games_list = [Game.objects.filter(data__id=game_id)[0] for game_id in default_games_id]
+                                        name__icontains=query if query else ''
+                                    ).filter(
+                                        rating__gte=int(rating) if rating else 1
+                                    )
 
-    games_list = [game.data for game in games_list]
+        if genre:
+            temp_list = []
+            for game in games_list:
+                game_genres = set()
+                for genre_object in game.genres.all():
+                    game_genres.add(genre_object.name)
+                if len(set(genre.split(',')).intersection(game_genres)) == len(genre.split(',')):
+                    temp_list.append(game)
+            games_list = temp_list[:]
+
+        if platform:
+            temp_list = []
+            for game in games_list:
+                game_platforms = set()
+                for platform_object in game.platforms.all():
+                    game_platforms.add(platform_object.name)
+                if len(set(platform.split(',')).intersection(game_platforms)) == len(platform.split(',')):
+                    temp_list.append(game)
+            games_list = temp_list[:]
+
+    else:
+        games_list = Game.objects.all()[:9]
 
     return render(request, 'index.html', context={
                         'games': games_list,
@@ -60,10 +68,10 @@ def index(request):
                 })
 
 
-def detailed_page(request, id):
-    game = Game.objects.filter(data__id=int(id))[0].data
+def detailed_page(request, game_id):
+    game = Game.objects.filter(game_id=int(game_id))[0]
 
-    name = game['name'].replace(':', '')
+    name = game.name.replace(':', '')
 
     twitter_api = TwitterApi()
     tweets = twitter_api.get_tweets(name)
@@ -243,8 +251,8 @@ def fav_games(request):
     games = []
 
     for must_game in must_games:
-        game = Game.objects.filter(data__id=must_game.game_id)[0].data
-        game['users_added'] = must_game.users_added
+        game = Game.objects.filter(game_id=must_game.game_id)[0]
+        game.users_added = must_game.users_added
         games.append(game)
 
     return render(request, 'fav_games.html', context={'games': games})
@@ -252,24 +260,24 @@ def fav_games(request):
 
 @login_required
 def must(request):
-    id = request.POST.get('game_id')
-    users_added = MustGame.objects.filter(game_id=id, is_deleted=False).count()
+    game_id = request.POST.get('game_id')
+    users_added = MustGame.objects.filter(game_id=game_id, is_deleted=False).count()
 
-    must_game, created = MustGame.objects.get_or_create(owner=request.user, game_id=id, users_added=users_added)
+    must_game, created = MustGame.objects.get_or_create(owner=request.user, game_id=game_id, users_added=users_added)
     
     if created:
-        MustGame.objects.filter(game_id=id).update(users_added=F('users_added') + 1)
+        MustGame.objects.filter(game_id=game_id).update(users_added=F('users_added') + 1)
     elif must_game.is_deleted:
         must_game.is_deleted = False
         must_game.save()
-        MustGame.objects.filter(game_id=id).update(users_added=F('users_added') + 1)
+        MustGame.objects.filter(game_id=game_id).update(users_added=F('users_added') + 1)
 
     return HttpResponse(status=200)
 
 
 @login_required
 def unmust(request):
-    id = request.POST.get('game_id')
-    MustGame.objects.filter(owner=request.user, game_id=id).update(is_deleted=True)
-    MustGame.objects.filter(game_id=id).update(users_added=F('users_added') - 1)
+    game_id = request.POST.get('game_id')
+    MustGame.objects.filter(owner=request.user, game_id=game_id).update(is_deleted=True)
+    MustGame.objects.filter(game_id=game_id).update(users_added=F('users_added') - 1)
     return HttpResponse(status=200)

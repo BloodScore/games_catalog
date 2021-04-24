@@ -106,15 +106,15 @@
                     {% for game in games %}
                         <div class="col-lg-4 col-xxl-3">
                             <div class="game_card">
-                                <img src="{{ game.cover.url }}" class="img-fluid">
+                                <img src="{{ game.cover_url }}" class="img-fluid">
                                 <div class="caption">
                                     <span>{{ game.name }}</span>
-                                    {% for genre in game.genres %}
-                                        <p>{{ genre }}</p>
+                                    {% for genre in game.genres.all %}
+                                        <p>{{ genre.name }}</p>
                                     {% endfor %}
                                     <div class="buttons">
-                                        <button><a href="{% url 'game_page' id=game.id %}">Open</a></button>
-                                        <button onclick="sendAjaxMust({{ game.id }})" style="color: black; font-weight: 900">MUST</button>
+                                        <button><a href="{% url 'game_page' game_id=game.game_id %}">Open</a></button>
+                                        <button onclick="sendAjaxMust({{ game.game_id }})" style="color: black; font-weight: 900">MUST</button>
                                     </div>
                                 </div>
                             </div>

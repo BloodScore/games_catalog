@@ -10,9 +10,9 @@ app.autodiscover_tasks()
 
 
 app.conf.beat_schedule = {
-    'add-every-5-seconds': {
+    'add-every-60-seconds': {
         'task': 'pages.tasks.celery_store_games',
-        'schedule': 5.0,
+        'schedule': 60.0,
         'args': (500,)
     },
 }
