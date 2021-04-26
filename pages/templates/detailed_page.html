@@ -7,30 +7,25 @@
             <div class="col-6" style="padding: 30px">
                 <div class="first-row">
                     <span>{{ game.name }}</span>
-                    <button onclick="sendAjaxMust({{ game.id }})"><b>MUST</b></a></button>
+                    <button onclick="sendAjaxMust({{ game.game_id }})"><b>MUST</b></button>
                 </div>
-                <p style="font-size: 19px; margin-top: 15px">
-                    {% for i in game.genres %}
-                        <b style="margin-right: 10px">{{ i.name }}</b>
-                    {% endfor %}
-                </p>
-                <p class="capt">Description</p>
+
+                <p class="capt" style="margin-top: 20px">Description</p>
                 <p style="font-weight: bold; color: gray">
                     {{ game.summary }}
                 </p>
                 <p class="capt">Release Date</p>
                 <p style="font-weight: bold; color: gray">
-<!--                    {{ game.first_release_date|date:"U" }}-->
                     {{ game.first_release_date }}
                 </p>
                 <p class="capt">Screenshots</p>
 
                 <div class="screenshots">
                     <div class="row">
-                        {% for i in game.screenshots %}
+                        {% for screenshot in game.screenshots.all %}
                             <div class="col-md-6 col-lg-4 col-xxl-3">
                                 <div class="screenshot">
-                                    <img src="{{ i.url }}">
+                                    <img src="{{ screenshot.url }}">
                                 </div>
                             </div>
                         {% endfor %}
@@ -39,7 +34,7 @@
             </div>
 
             <div class="col">
-                <p style="font-size: 23px; margin-top: 138.5px"><b>Ratings</b></p>
+                <p style="font-size: 23px; margin-top: 99px"><b>Ratings</b></p>
                 <div class="rating" style="background-color: rgb(104, 230, 85);">
                     <span style="float: left">Users</span>
                     <span style="float: right">{{ game.rating|floatformat }}</span>
@@ -50,14 +45,14 @@
                 </div>
                 <p class="capt" style="margin-top: 50px">Genres</p>
                 <div class="genres">
-                    {% for i in game.genres %}
-                        <span>{{ i.name }}</span>
+                    {% for genre in game.genres.all %}
+                        <span>{{ genre.name }}</span>
                     {% endfor %}
                 </div>
                 <p class="capt" style="margin-top: 100px">Platforms</p>
                 <div class="genres">
-                    {% for i in game.platforms %}
-                        <span>{{ i.name }}</span>
+                    {% for platform in game.platforms.all %}
+                        <span>{{ platform.name }}</span>
                     {% endfor %}
                 </div>
             </div>

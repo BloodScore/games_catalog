@@ -8,14 +8,14 @@
                     {% for game in games %}
                         <div class="col-lg-4 col-xxl-3">
                             <div class="game_card">
-                                <img src="{{ game.cover.url }}" class="img-fluid">
+                                <img src="{{ game.cover_url }}" class="img-fluid">
                                 <div class="caption" style="background: rgba(60, 49, 113, 0.8)">
                                     <span>{{ game.name }}</span>
                                     <div class="must-card-buttons">
-                                        <button><a href="{% url 'game_page' id=game.id %}"><b>Open</b></a></button>
-                                        <button id="favgames-unmust-btn-{{ game.id }}" onclick="sendAjaxUnmust({{ game.id }})" style="background-color: red; font-weight: 900">UnMUST</button>
+                                        <button><a href="{% url 'game_page' game_id=game.game_id %}"><b>Open</b></a></button>
+                                        <button id="favgames-unmust-btn-{{ game.game_id }}" onclick="sendAjaxUnmust({{ game.game_id }})" style="background-color: red; font-weight: 900">UnMUST</button>
                                     </div>
-                                    <span style="font-size: 13px; margin-top: 7px;">Users added: <span style="font-size: 13px; display: inline-block" id="users-added-{{ game.id }}">{{ game.users_added }}</span></span>
+                                    <span style="font-size: 13px; margin-top: 7px;">Users added: <span style="font-size: 13px; display: inline-block" id="users-added-{{ game.game_id }}">{{ game.users_added }}</span></span>
                                 </div>
                             </div>
                         </div>
