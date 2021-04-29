@@ -3,5 +3,6 @@
 /workspace.xml
 .idea/
 db.sqlite3
+celerybeat-schedule.db
 __pycache__/
 .env
