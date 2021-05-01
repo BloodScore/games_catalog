@@ -1,7 +1,7 @@
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import F
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.shortcuts import render, redirect
@@ -9,12 +9,20 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from rest_framework import permissions, status
+from rest_framework.decorators import api_view
+from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+
 from .integrations.igdb_api import IgdbAPI
 from .integrations.twitter_api import TwitterApi
 from .forms import CreateCustomUserForm, LoginForm, CustomUserInfoForm, EmailForm, PasswordResetForm, \
     CustomUserChangeForm
 from .tokens import account_activation_token, password_reset_token
 from .models import CustomUser, MustGame, Game
+from .serializers import CustomUserSerializer, GameSerializer, MustGameSerializer
 
 
 def index(request):
@@ -281,3 +289,84 @@ def unmust(request):
     MustGame.objects.filter(owner=request.user, game_id=game_id).update(is_deleted=True)
     MustGame.objects.filter(game_id=game_id).update(users_added=F('users_added') - 1)
     return HttpResponse(status=200)
+
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'profile': reverse('api_profile', request=request, format=format),
+        'games': reverse('api_games', request=request, format=format),
+        'must_games': reverse('api_must_games', request=request, format=format),
+    })
+
+
+class CustomUserView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        serializer = CustomUserSerializer(request.user)
+        return Response(serializer.data)
+
+
+class GameListView(APIView, LimitOffsetPagination):
+    def get(self, request):
+        games = Game.objects.all()
+        results = self.paginate_queryset(games, request, view=self)
+        serializer = GameSerializer(results, many=True, context={'request': request})
+        return self.get_paginated_response(serializer.data)
+
+
+class GameDetailedView(APIView):
+    def get_object(self, game_id):
+        try:
+            return Game.objects.get(game_id=game_id)
+        except Game.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk):
+        game = self.get_object(pk)
+        serializer = GameSerializer(game, context={'request': request})
+        return Response(serializer.data)
+
+
+class MustGameListView(APIView, LimitOffsetPagination):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        must_games_objects = MustGame.objects.filter(owner=request.user, is_deleted=False)
+
+        must_games_ids = [must_game.game_id for must_game in must_games_objects]
+
+        users_must_games = [Game.objects.get(game_id=game_id) for game_id in must_games_ids]
+        results = self.paginate_queryset(users_must_games, request, view=self)
+        serializer = GameSerializer(results, many=True, context={'request': request})
+        return self.get_paginated_response(serializer.data)
+
+    def post(self, request):
+        game_id = request.data.get('game_id')
+        must_games = MustGame.objects.filter(owner=request.user, game_id=int(game_id), is_deleted=False)
+
+        if not must_games:
+            must_games_objects = MustGame.objects.filter(owner=request.user, game_id=int(game_id))
+
+            data = {
+                'game_id': int(game_id),
+                'users_added': MustGame.objects.filter(game_id=game_id, is_deleted=False).count() + 1,
+                'is_deleted': False
+            }
+
+            if must_games_objects:
+                serializer = MustGameSerializer(must_games_objects[0], data=data, context={'request': request})
+            else:
+                serializer = MustGameSerializer(data=data, context={'request': request})
+
+            MustGame.objects.filter(game_id=int(game_id)).exclude(owner=request.user).update(users_added=F('users_added') + 1)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            MustGame.objects.filter(game_id=int(game_id)).update(users_added=F('users_added') - 1)
+            MustGame.objects.filter(game_id=int(game_id), owner=request.user).update(is_deleted=True)
+            return Response({'message': f'Must game with id {game_id} has been deleted.'}, status=status.HTTP_204_NO_CONTENT)
