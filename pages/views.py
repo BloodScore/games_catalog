@@ -297,6 +297,7 @@ def api_root(request, format=None):
         'profile': reverse('api_profile', request=request, format=format),
         'games': reverse('api_games', request=request, format=format),
         'must_games': reverse('api_must_games', request=request, format=format),
+        'must_game_detailed': reverse('api_game', args=[20950], request=request),
     })
 
 
@@ -317,16 +318,11 @@ class GameListView(APIView, LimitOffsetPagination):
 
 
 class GameDetailedView(APIView):
-    def get_object(self, game_id):
-        try:
-            return Game.objects.get(game_id=game_id)
-        except Game.DoesNotExist:
-            # raise Http404('Game does not exist!')
-            return Response({'message': 'Game does not exist!'}, status=status.HTTP_404_NOT_FOUND)
-
     def get(self, request, pk):
-        game = self.get_object(pk)
-        serializer = GameSerializer(game, context={'request': request})
+        games = Game.objects.filter(game_id=int(pk))
+        if not games:
+            return Response({'message': 'Game does not exist!'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = GameSerializer(games[0], context={'request': request})
         return Response(serializer.data)
 
 
