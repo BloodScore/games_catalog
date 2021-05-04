@@ -321,7 +321,8 @@ class GameDetailedView(APIView):
         try:
             return Game.objects.get(game_id=game_id)
         except Game.DoesNotExist:
-            raise Http404
+            # raise Http404('Game does not exist!')
+            return Response({'message': 'Game does not exist!'}, status=status.HTTP_404_NOT_FOUND)
 
     def get(self, request, pk):
         game = self.get_object(pk)
@@ -344,7 +345,14 @@ class MustGameListView(APIView, LimitOffsetPagination):
 
     def post(self, request):
         game_id = request.data.get('game_id')
-        must_games = MustGame.objects.filter(owner=request.user, game_id=int(game_id), is_deleted=False)
+        try:
+            must_games = MustGame.objects.filter(owner=request.user, game_id=int(game_id), is_deleted=False)
+        except (TypeError, ValueError):
+            return Response({'message': 'Game id is missing or incorrect'}, status=status.HTTP_400_BAD_REQUEST)
+
+        games = Game.objects.filter(game_id=int(game_id))
+        if not games:
+            return Response({'message': 'Game does not exist!'}, status=status.HTTP_404_NOT_FOUND)
 
         if not must_games:
             must_games_objects = MustGame.objects.filter(owner=request.user, game_id=int(game_id))
