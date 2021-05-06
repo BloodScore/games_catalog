@@ -1,7 +1,8 @@
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import F
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.shortcuts import render, redirect
@@ -31,6 +32,7 @@ def index(request):
     platform = request.GET.get('pl')
     genre = request.GET.get('gn')
     rating = request.GET.get('ra')
+    page = request.GET.get('page')
 
     platforms_list = [platform for platform in igdb_api.get_platforms()]
     genres_list = [genre for genre in igdb_api.get_genres()]
@@ -63,7 +65,15 @@ def index(request):
             games_list = temp_list[:]
 
     else:
-        games_list = Game.objects.all()[:9]
+        games_list = Game.objects.all()
+
+    paginator = Paginator(games_list, 12)
+    try:
+        games_list = paginator.page(page)
+    except PageNotAnInteger:
+        games_list = paginator.page(1)
+    except EmptyPage:
+        games_list = paginator.page(paginator.num_pages)
 
     return render(request, 'index.html', context={
                         'games': games_list,
@@ -255,6 +265,7 @@ def delete_profile(request):
 
 @login_required
 def fav_games(request):
+    page = request.GET.get('page')
     must_games = MustGame.objects.filter(owner=request.user, is_deleted=False)
     games = []
 
@@ -262,6 +273,14 @@ def fav_games(request):
         game = Game.objects.filter(game_id=must_game.game_id)[0]
         game.users_added = must_game.users_added
         games.append(game)
+
+    paginator = Paginator(games, 12)
+    try:
+        games = paginator.page(page)
+    except PageNotAnInteger:
+        games = paginator.page(1)
+    except EmptyPage:
+        games = paginator.page(paginator.num_pages)
 
     return render(request, 'fav_games.html', context={'games': games})
 
