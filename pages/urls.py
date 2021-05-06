@@ -1,4 +1,4 @@
-from django.urls import path, re_path
+from django.urls import include, path, re_path
 from . import views
 
 
@@ -21,4 +21,11 @@ urlpatterns = [
     path('must', views.must, name='must'),
     path('unmust', views.unmust, name='unmust'),
     path('', views.index, name='games_list_page'),
+    # path('api/', include(router.urls)),
+    path('api/', views.api_root),
+    path('api/profile/', views.CustomUserView.as_view(), name='api_profile'),
+    path('api/games/', views.GameListView.as_view(), name='api_games'),
+    path('api/games/<int:pk>/', views.GameDetailedView.as_view(), name='api_game'),
+    path('api/must_games/', views.MustGameListView.as_view(), name='api_must_games'),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
