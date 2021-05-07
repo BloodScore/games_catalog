@@ -26,6 +26,9 @@ from .models import CustomUser, MustGame, Game
 from .serializers import CustomUserSerializer, GameSerializer, MustGameSerializer
 
 
+GAMES_PER_PAGE = 12
+
+
 def index(request):
     igdb_api = IgdbAPI()
     query = request.GET.get('q')
@@ -67,7 +70,7 @@ def index(request):
     else:
         games_list = Game.objects.all()
 
-    paginator = Paginator(games_list, 12)
+    paginator = Paginator(games_list, GAMES_PER_PAGE)
     try:
         games_list = paginator.page(page)
     except PageNotAnInteger:
@@ -274,7 +277,7 @@ def fav_games(request):
         game.users_added = must_game.users_added
         games.append(game)
 
-    paginator = Paginator(games, 12)
+    paginator = Paginator(games, GAMES_PER_PAGE)
     try:
         games = paginator.page(page)
     except PageNotAnInteger:
