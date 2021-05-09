@@ -1,5 +1,6 @@
 {% extends 'index.html' %}
 {% load static %}
+{% load my_tags %}
 
 {% block content %}
     <div class="cards">
@@ -26,9 +27,21 @@
             </div>
         </div>
 
-        <div class="navigation">
-            <button>1</button>
-            <button>2</button>
-            <button>3</button>
-        </div>
+        {% if games %}
+            <div class="navigation">
+                {% if games.has_previous %}
+                    <a href="?page=1"><<</a>
+                    <a href="?page={{ games.previous_page_number }}"><</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ games.number }} of {{ games.paginator.num_pages }}.
+                </span>
+
+                {% if games.has_next %}
+                    <a href="?page={{ games.next_page_number }}">></a>
+                    <a href="?page={{ games.paginator.num_pages }}">>></a>
+                {% endif %}
+            </div>
+        {% endif %}
 {% endblock %}

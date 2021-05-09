@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load my_tags %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -126,11 +127,23 @@
             </div>
         </div>
 
-        <div class="navigation">
-            <button>1</button>
-            <button>2</button>
-            <button>3</button>
-        </div>
+        {% if games %}
+            <div class="navigation">
+                {% if games.has_previous %}
+                    <a href="?{% param_replace page=1 %}"><<</a>
+                    <a href="?{% param_replace page=games.previous_page_number %}"><</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ games.number }} of {{ games.paginator.num_pages }}.
+                </span>
+
+                {% if games.has_next %}
+                    <a href="?{% param_replace page=games.next_page_number %}">></a>
+                    <a href="?{% param_replace page=games.paginator.num_pages %}">>></a>
+                {% endif %}
+            </div>
+        {% endif %}
 
     {% endblock %}
 
