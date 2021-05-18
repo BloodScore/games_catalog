@@ -319,7 +319,7 @@ def api_root(request, format=None):
         'profile': reverse('api_profile', request=request, format=format),
         'games': reverse('api_games', request=request, format=format),
         'must_games': reverse('api_must_games', request=request, format=format),
-        'must_game_detailed': reverse('api_game', args=[20950], request=request),
+        'game_detailed': reverse('api_game', args=[20950], request=request),
     })
 
 
